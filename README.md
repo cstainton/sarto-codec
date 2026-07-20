@@ -37,6 +37,7 @@ transport or generated client APIs.
 | --- | --- |
 | `sarto-codec-api` | Content codec contract, media-type registry, and actionable unsupported-media-type failure. |
 | `sarto-codec-json` | TeaVM-safe JSON parser/output plus the registry used by generated type codecs. |
+| `sarto-codec-wire` | Binary Protobuf/Wire registry for generated message codecs. |
 
 ## Other representations
 
@@ -44,8 +45,10 @@ The next useful shared format is XML. Its generated mapping must respect XML
 schema details such as attributes, elements, namespaces, and wrapped lists; it
 should not guess a JSON-shaped XML document from Java field names. Plain text
 can be handled as a scalar codec. Form URL encoding and multipart are request
-entity encoders rather than general object codecs. Binary formats such as CBOR
-or Protocol Buffers should be separate optional modules.
+entity encoders rather than general object codecs. The shared API is
+byte-oriented so binary formats are not forced through text or Base64.
+Protobuf/Wire is provided by `sarto-codec-wire`; CBOR can follow the same
+optional-module pattern.
 
 When a contract declares an unsupported media type, a generator should emit a
 named placeholder binding for that media type. Construction still succeeds,

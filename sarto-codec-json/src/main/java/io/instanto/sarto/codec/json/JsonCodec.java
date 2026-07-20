@@ -8,6 +8,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.nio.charset.StandardCharsets;
 
 /** JSON syntax and type registry shared by generated codecs. */
 public class JsonCodec implements ContentCodec {
@@ -24,14 +25,12 @@ public class JsonCodec implements ContentCodec {
         return normalized.equals("application/json") || normalized.endsWith("+json");
     }
 
-    @Override
     public final String encode(Object value) {
         JsonOutput output = new JsonOutput();
         writeValue(output, value);
         return output.toString();
     }
 
-    @Override
     public final <T> T decode(String content, Class<T> type) {
         PortableJsonParser parser = new PortableJsonParser(content);
         T value = readValue(parser, type);
@@ -39,12 +38,26 @@ public class JsonCodec implements ContentCodec {
         return value;
     }
 
-    @Override
     public final <T> List<T> decodeList(String content, Class<T> elementType) {
         PortableJsonParser parser = new PortableJsonParser(content);
         List<T> value = readList(parser, elementType);
         parser.expectEnd();
         return value;
+    }
+
+    @Override
+    public final byte[] encodeContent(Object value) {
+        return encode(value).getBytes(StandardCharsets.UTF_8);
+    }
+
+    @Override
+    public final <T> T decodeContent(byte[] content, Class<T> type) {
+        return decode(new String(content, StandardCharsets.UTF_8), type);
+    }
+
+    @Override
+    public final <T> List<T> decodeListContent(byte[] content, Class<T> elementType) {
+        return decodeList(new String(content, StandardCharsets.UTF_8), elementType);
     }
 
     protected final void writeValue(JsonOutput output, Object value) {

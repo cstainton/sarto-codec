@@ -6,11 +6,11 @@ import java.util.List;
 public interface ContentCodec {
     boolean supports(String mediaType);
 
-    String encode(Object value);
+    byte[] encodeContent(Object value);
 
-    <T> T decode(String content, Class<T> type);
+    <T> T decodeContent(byte[] content, Class<T> type);
 
-    default <T> List<T> decodeList(String content, Class<T> elementType) {
+    default <T> List<T> decodeListContent(byte[] content, Class<T> elementType) {
         throw new UnsupportedOperationException("List decoding is not supported by " + getClass().getName());
     }
 }
