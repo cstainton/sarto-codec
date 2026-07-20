@@ -1,12 +1,14 @@
 # Sarto Codec
 
-Sarto Codec is a small, standalone serialization brick for Java code that must
-run unchanged on the JVM and through TeaVM. It supplies content-type-neutral
-codec contracts and reflection-free JSON machinery. Code generators provide
-the type-specific mappings.
+Sarto Codec is the shared serialization foundation used by independently
+consumable Sarto libraries such as Sarto REST and the Sarto RPC framework. It
+supplies content-type-neutral codec contracts, portable runtimes, and the
+build-time machinery that generates type-specific mappings for JVM and TeaVM.
 
-It deliberately has no dependency on Sarto REST, CDI, persistence, RPC, or an
-application framework.
+It is independently built and released so those libraries can share it without
+depending on one another. It is not presented as a separate application-facing
+framework: most users receive its runtime transitively and interact with their
+REST, RPC, or persistence API instead.
 
 ## Why it exists
 
@@ -36,8 +38,9 @@ transport or generated client APIs.
 | Module | Purpose |
 | --- | --- |
 | `sarto-codec-api` | Content codec contract, media-type registry, and actionable unsupported-media-type failure. |
-| `sarto-codec-json` | TeaVM-safe JSON parser/output plus the registry used by generated type codecs. |
-| `sarto-codec-wire` | Binary Protobuf/Wire registry for generated message codecs. |
+| `sarto-codec-runtime-json` | TeaVM-safe JSON parser/output plus the registry used by generated type codecs. |
+| `sarto-codec-runtime-wire` | Binary Protobuf/Wire registry for generated message codecs. |
+| `sarto-codec-codegen` | Caller-neutral type model and shared JSON/Protobuf source generators. |
 
 ## Other representations
 
@@ -48,15 +51,13 @@ can be handled as a scalar codec. Form URL encoding and multipart are request
 entity encoders rather than general object codecs. The shared API is
 byte-oriented so binary formats are not forced through text or Base64.
 Protobuf is the wire format used by Sarto's existing generated Wire codecs.
-`sarto-codec-wire` supplies their reusable runtime contract and media-type
-registry; it does not maintain a second protobuf model or encoder. The existing
-`PortableWireCodecGenerator` still lives in Sarto codegen and emits the actual
-field/tag encoding using Square Wire primitives. Extracting its portable model
-and generation logic into a future `sarto-codec-codegen` module will let REST,
-RPC, persistence, and other Sarto bricks request the same generated protobuf
-codec without depending on the rest of Sarto codegen. Until that extraction,
-callers register an existing generated codec (or their own `WireTypeCodec`) with
-`WireCodec`. CBOR can follow the same optional-module pattern.
+`sarto-codec-runtime-wire` supplies the reusable runtime contract and media-type
+registry; it does not maintain a second protobuf model or encoder.
+`sarto-codec-codegen` emits field/tag encoding using Square Wire primitives.
+REST, RPC, persistence, and other Sarto libraries translate their own contract
+metadata into the shared codec type model; protobuf field identity remains the
+responsibility of that caller context. CBOR can follow the same optional-module
+pattern.
 
 When a contract declares an unsupported media type, a generator should emit a
 named placeholder binding for that media type. Construction still succeeds,

@@ -36,12 +36,16 @@
         <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>5.11.0</junit.version>
+        <javapoet.version>1.13.0</javapoet.version>
+        <wire.version>5.4.0</wire.version>
+        <compile-testing.version>0.23.0</compile-testing.version>
     </properties>
 
     <modules>
         <module>sarto-codec-api</module>
         <module>sarto-codec-json</module>
         <module>sarto-codec-wire</module>
+        <module>sarto-codec-codegen</module>
     </modules>
 
     <dependencyManagement>
@@ -53,13 +57,33 @@
             </dependency>
             <dependency>
                 <groupId>io.instanto</groupId>
-                <artifactId>sarto-codec-json</artifactId>
+                <artifactId>sarto-codec-runtime-json</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>io.instanto</groupId>
-                <artifactId>sarto-codec-wire</artifactId>
+                <artifactId>sarto-codec-runtime-wire</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.instanto</groupId>
+                <artifactId>sarto-codec-codegen</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.squareup</groupId>
+                <artifactId>javapoet</artifactId>
+                <version>${javapoet.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.squareup.wire</groupId>
+                <artifactId>wire-runtime-jvm</artifactId>
+                <version>${wire.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.testing.compile</groupId>
+                <artifactId>compile-testing</artifactId>
+                <version>${compile-testing.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>

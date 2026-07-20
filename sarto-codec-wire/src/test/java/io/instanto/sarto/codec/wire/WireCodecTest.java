@@ -20,6 +20,11 @@ class WireCodecTest {
 
     private static final class MessageCodec implements WireTypeCodec<Message> {
         @Override
+        public Class<Message> type() {
+            return Message.class;
+        }
+
+        @Override
         public byte[] encode(Message value) {
             return ByteBuffer.allocate(Integer.BYTES).putInt(value.value()).array();
         }
