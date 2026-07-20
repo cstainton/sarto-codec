@@ -47,8 +47,16 @@ should not guess a JSON-shaped XML document from Java field names. Plain text
 can be handled as a scalar codec. Form URL encoding and multipart are request
 entity encoders rather than general object codecs. The shared API is
 byte-oriented so binary formats are not forced through text or Base64.
-Protobuf/Wire is provided by `sarto-codec-wire`; CBOR can follow the same
-optional-module pattern.
+Protobuf is the wire format used by Sarto's existing generated Wire codecs.
+`sarto-codec-wire` supplies their reusable runtime contract and media-type
+registry; it does not maintain a second protobuf model or encoder. The existing
+`PortableWireCodecGenerator` still lives in Sarto codegen and emits the actual
+field/tag encoding using Square Wire primitives. Extracting its portable model
+and generation logic into a future `sarto-codec-codegen` module will let REST,
+RPC, persistence, and other Sarto bricks request the same generated protobuf
+codec without depending on the rest of Sarto codegen. Until that extraction,
+callers register an existing generated codec (or their own `WireTypeCodec`) with
+`WireCodec`. CBOR can follow the same optional-module pattern.
 
 When a contract declares an unsupported media type, a generator should emit a
 named placeholder binding for that media type. Construction still succeeds,
