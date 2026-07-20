@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>io.instanto</groupId><artifactId>sarto-codec</artifactId>
-        <version>${revision}</version><relativePath>..</relativePath>
+        <version>0.1.0-SNAPSHOT</version><relativePath>..</relativePath>
     </parent>
     <artifactId>sarto-codec-api</artifactId>
     <name>Sarto Codec API</name>
